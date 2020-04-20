@@ -25,9 +25,12 @@ public class TestMonster : Monster
 
     private void Awake() {agent = GetComponent<NavMeshAgent>();}
 
-    private void Start() {Updater.Instance.onUpdate += FrameUpdate;}
+    private void OnEnable() {Updater.OnUpdate += FrameUpdate;}
+
+    private void OnDisable() {Updater.OnUpdate -= FrameUpdate;}
 
     private void FrameUpdate() {
+        if(Target == null) return;
         if(isAttacking) return;
         if(Vector3.Distance(transform.position, Target.position) < attackDistance)
         {
@@ -40,12 +43,8 @@ public class TestMonster : Monster
     private IEnumerator Attack() {
         IsAttacking = true;
         yield return new WaitForSeconds(attackTime);
-        if(Vector3.Distance(transform.position, Target.position) > attackDistance)
-        {
-            IsAttacking = false;
-            yield break;
-        }
-        else if(Target.TryGetComponent(out Damageable damageable)) damageable.Damage(attackDamage);
         IsAttacking = false;
+        if(Vector3.Distance(transform.position, Target.position) > attackDistance) yield break;
+        else if(Target.TryGetComponent(out Damageable damageable)) damageable.Damage(attackDamage);
     }
 }
