@@ -12,6 +12,8 @@ public class PlayerAttack : MonoBehaviour
     private float attackTimer;
     [SerializeField] private int maxEnemies;
     [SerializeField] private int damage;
+    [Space]
+    [SerializeField] private Animator animator;
 
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.green;
@@ -24,6 +26,7 @@ public class PlayerAttack : MonoBehaviour
         input.performed += context => {
             if(Time.time < attackTimer) return;
             else attackTimer = Time.time+attackTime;
+            animator.SetTrigger("attack");
             Collider[] colliders = Physics.OverlapBox(
                 transform.position+transform.rotation*areaPosition
                 , areaSize
